@@ -15,14 +15,10 @@
 import csv
 import os
 
-try:
-    from md5 import md5
-except ImportError:
-    from hashlib import md5
-
 from catkin_tools.argument_parsing import handle_make_arguments
 
 from catkin_tools.common import mkdir_p
+from catkin_tools.common import get_hash
 
 from catkin_tools.execution.jobs import Job
 from catkin_tools.execution.stages import CommandStage
@@ -289,8 +285,8 @@ def link_devel_products(
             if os.path.exists(dest_file):
                 if os.path.realpath(dest_file) != os.path.realpath(source_file):
                     # Compute hashes for colliding files
-                    source_hash = md5(open(os.path.realpath(source_file), "rb").read()).hexdigest()
-                    dest_hash = md5(open(os.path.realpath(dest_file), "rb").read()).hexdigest()
+                    source_hash = get_hash(os.path.realpath(source_file))
+                    dest_hash = get_hash(os.path.realpath(dest_file))
                     # If the link links to a different file, report a warning and increment
                     # the collision counter for this path
                     if dest_hash != source_hash:

@@ -20,6 +20,11 @@ import os
 import re
 import sys
 
+try:
+    from md5 import md5
+except ImportError:
+    from hashlib import md5
+
 import trollius as asyncio
 
 from shlex import split as _cmd_split
@@ -697,3 +702,11 @@ def parse_env_str(environ_str):
         print('WARNING: Could not parse env string: `{}`'.format(environ_str),
               file=sys.stderr)
         raise
+
+def get_hash(filename):
+    """ Convenience function to get the md5 hash of either a binary or text file """
+    data = open(filename).read()
+    try:
+        return md5(data.encode('utf-8')).hexdigest()
+    except UnicodeDecodeError:
+        return md5(data).hexdigest()

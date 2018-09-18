@@ -14,10 +14,6 @@
 
 from __future__ import print_function
 
-try:
-    from md5 import md5
-except ImportError:
-    from hashlib import md5
 import os
 import subprocess
 import sys
@@ -31,6 +27,7 @@ from osrf_pycommon.process_utils import execute_process
 
 from .common import parse_env_str
 from .common import string_type
+from .common import get_hash
 
 DEFAULT_SHELL = '/bin/bash'
 
@@ -65,7 +62,7 @@ def get_resultspace_environment(result_space_path, base_env=None, quiet=False, c
     env_hooks_path = os.path.join(result_space_path, 'etc', 'catkin', 'profile.d')
     if os.path.exists(env_hooks_path):
         env_hooks = [
-            md5(open(os.path.join(env_hooks_path, path), "rb").read()).hexdigest()
+            get_hash(os.path.join(env_hooks_path, path))
             for path in os.listdir(env_hooks_path)]
     else:
         env_hooks = []
